@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils import timezone
 
 
 class User(AbstractUser):
@@ -12,9 +13,11 @@ class AuctionListing(models.Model):
     published_by = models.CharField(max_length=64, default="N/A")
     price = models.PositiveIntegerField(default=0) 
     photo = models.CharField(max_length=250)
+    category = models.CharField(max_length=64, default="")
+    date_created=models.DateTimeField(default=timezone.now, editable=False)
 
     def __str__(self):
-        return f"{self.name}"
+        return f"{self.name}, published by {self.published_by}"
     
 
 class Comment(models.Model):

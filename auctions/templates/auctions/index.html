@@ -1,7 +1,36 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <style>
+        .row {
+            background-color: rgb(195, 219, 211);
+            margin: 1rem;
+        }
+        img {
+            height: 300px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    </style>
     <h2>Active Listings</h2>
-
-    TODO
+    {% for listing in all_listings %}
+        <a href="{{ listing.name }}">
+            <div class="row">
+                <div class="col">
+                    <img src="{{ listing.photo }}" alt="Auction listing photo">
+                </div>
+                <div class="col">
+                    <h2>{{ listing.name }}</h2>
+                    <h5>Price: ${{ listing.price }}</h5>
+                    <h5>Seller: {{ listing.published_by }}</h5>
+                    <h5>Created: {{ listing.date_created }}</h5>
+                </div>
+                <div class="col">
+                    <p>{{ listing.description }}</p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
 {% endblock %}

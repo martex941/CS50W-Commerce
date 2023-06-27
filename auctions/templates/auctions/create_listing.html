@@ -1,17 +1,22 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <style>
+        .form-group, .btn {
+            margin: 1rem;
+        }
+    </style>
 
-    <h2>Create Listing</h2>
+    <h2>Create a listing</h2>
 
 
     <form action="{% url 'create_listing' %}" method="post">
         {% csrf_token %}
         <div class="form-group">
-            <input autofocus class="form-control" type="text" name="title" placeholder="Listing title">
+            <input class="form-control" type="text" name="title" placeholder="Listing title">
         </div>
         <div class="form-group">
-            <input class="form-control" type="text" name="description" placeholder="Description">
+            <textarea class="form-control" name="description" placeholder="Description"></textarea>
         </div>
         <div class="form-group">
             <input class="form-control" type="text" name="bid" placeholder="Enter starting bid price">
@@ -19,7 +24,22 @@
         <div class="form-group">
             <input class="form-control" type="text" name="photo" placeholder="(optional) provide a URL for the photo of the item">
         </div>
-        <button type="submit">Publish</button>
+        <div class="form-group">
+            <select class="form-control" name="category">
+                <option value="Clothing, shoes & accessories">Clothing, shoes and accessories</option>
+                <option value="Sporting Goods">Sporting Goods</option>
+                <option value="Home & Garden">Home & Garden</option>
+                <option value="Toys & Hobbies">Toys & Hobbies</option>
+                <option value="Business & Industrial">Business & Industrial</option>
+                <option value="Health & Beauty">Health & Beauty</option>
+                <option value="Pet Supplies">Pet Supplies</option>
+                <option value="Baby essentials">Baby essentials</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Collectibles & Art">Collectibles & Art</option>
+                <option value="Books, Movies & Music">Books, Movies & Music</option>
+            </select>
+        </div>
+        <button class="btn btn-primary" type="submit">Publish</button>
     </form>
 
 
