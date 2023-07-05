@@ -19,7 +19,11 @@
         <a href="{{ listing.name }}">
             <div class="row">
                 <div class="col">
-                    <img src="{{ listing.photo }}" alt="Auction listing photo">
+                    {% if listing.photo %}
+                        <img src="{{ listing.photo }}" alt="Auction listing photo">
+                    {% else %}
+                        <img src="https://img.propertyshark.com/img/no_listing_photo.png" alt="Photo not available">
+                    {% endif %}
                 </div>
                 <div class="col">
                     <h2>{{ listing.name }}</h2>

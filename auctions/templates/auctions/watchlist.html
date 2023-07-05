@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    {% for listing in watchlist %}
+        <a href="">
+            <div class="row">
+                <div class="col">
+                    <img src="{{ listing.photo }}" alt="Auction listing photo">
+                </div>
+                <div class="col">
+                    <h2></h2>
+                    <h5>Price: $</h5>
+                    <h5>Seller: </h5>
+                    <h5>Created: </h5>
+                </div>
+                <div class="col">
+                    <p></p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}
