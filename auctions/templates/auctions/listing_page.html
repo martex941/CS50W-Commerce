@@ -16,17 +16,17 @@
     </style>
     <div class="row">
         <div class="col">
-            {% if listing.photo %}
-                <img src="{{ listing.photo }}" alt="Auction listing photo">
-            {% else %}
-                <img src="https://img.propertyshark.com/img/no_listing_photo.png" alt="Photo not available">
-            {% endif %}
+            <img src="{{ listing.photo }}" alt="Auction listing photo">
         </div>
         <div class="col">
             <h2>{{ listing.name }}</h2>
             <h5>Price: ${{ listing.price }}</h5>
             <h5>Seller: {{ listing.published_by }}</h5>
             <h5>Created: {{ listing.date_created }}</h5>
+            <form action="{% url 'listing_page' listing_title=listing_name %}" method="post" name="add-to-watchlist">
+                {% csrf_token %}
+                <button type="submit">Add to watchlist</button>
+            </form>
         </div>
         <div class="col">
             <p>{{ listing.description }}</p>

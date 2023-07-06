@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.validators import URLValidator
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .models import User, AuctionListing, Watchlist
@@ -14,6 +16,14 @@ def index(request):
     })
 
 
+def validate_url(url):
+    validator = URLValidator()
+    try:
+        validator(url)
+    except ValidationError:
+        return False
+    return True
+
 @login_required
 def create_listing(request):
     if request.method == "POST":
@@ -23,10 +33,17 @@ def create_listing(request):
         published_by=current_user.username
         price=request.POST["bid"]
         photo=request.POST["photo"]
+
+        # Making sure the user inputs a url to a photo and not anything else
+        if validate_url(photo):
+            pass
+        else:
+            photo = "https://img.propertyshark.com/img/no_listing_photo.png"
+
         category=request.POST["category"]
         new_listing=AuctionListing(name=listing_name, description=description, published_by=published_by, price=price, photo=photo, category=category)
         new_listing.save()
-        return HttpResponseRedirect(reverse(f"{listing_name}"))
+        return redirect("listing_page", listing_title=listing_name)
 
     return render(request, "auctions/create_listing.html")
 
@@ -37,8 +54,15 @@ def listing_page(request, listing_title):
     except AuctionListing.DoesNotExist:
         return HttpResponseRedirect(reverse("no_listing"))
     
+    if request.method == "POST":
+        user = request.user
+        new_watchlist_entry = Watchlist(watch_user=user, watch_listing=listing_info)
+        new_watchlist_entry.save()
+        return HttpResponse("Item added to your watchlist.")
+
     return render(request, "auctions/listing_page.html", {
-        "listing": listing_info
+        "listing": listing_info,
+        "listing_name": listing_info.name
     })
 
 
@@ -48,16 +72,11 @@ def no_listing(request):
 
 @login_required
 def watchlist(request):
-    user_id = request.user.id
-    listings = AuctionListing.objects.all()
-    print(listings)
-    watchlist_items = listings.filter(id__in=listings)
-    print(watchlist_items)
-    list = Watchlist.objects.all()
-    print(list)
-
+    user = request.user
+    list = Watchlist.objects.filter(watch_user=user)
+    
     return render(request, "auctions/watchlist.html", {
-        "listings": listings
+        "listings": list
     })
 
 
