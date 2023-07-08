@@ -1,0 +1,187 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <style>
+        .row {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            border: none;
+            background-color: white;
+        }
+
+        .card {
+            width: 400px;
+            height: 400px;
+        }
+
+        .card-title {
+            color: white;
+            z-index: 1;
+        }
+
+        .img-content {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        img {
+            transition: 0.5s ease;
+            opacity: 0.5;
+            object-fit: cover;
+            width: 400px;
+            height: 400px;
+        }
+
+        img:hover {
+            opacity: 0.8;
+        }
+
+    </style>
+
+    <h1 class="text-center">CATEGORIES</h1>
+
+    <div class="row">
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Clothing, shoes and accessories</h4>
+                    </div>
+                    <div class="img-content">
+                        <img class="card-img" src="https://img.freepik.com/free-photo/shop-clothing-clothes-shop-hanger-modern-shop-boutique_1150-8886.jpg" alt="Clothing, shoes and accessories">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Sporting Goods</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://unitedfsi.com/wp-content/uploads/2018/10/Sporting-Goods-800x744.jpg" alt="Sporting Goods">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Home & Garden</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://s1.kaercher-media.com/mam/16453730/application/104763/d0.jpg" alt="Home & Garden">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Toys & Hobbies</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://kidsstoppress.com/wp-content/uploads/2021/09/1539681380.BestToyStoresInGurugram_kidsstoppress.jpg" alt="Toys & Hobbies">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Business & Industrial</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://www.cbia.com/wp-content/uploads/2022/06/Create-Opportunity-1.jpg" alt="Business & Industrial">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Health & Beauty</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://static.independent.co.uk/2022/04/21/21/health%20and%20beauty.jpg?width=1200" alt="Health & Beauty">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Pet Supplies</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://media.istockphoto.com/id/1248454290/photo/accessories-for-cat-and-dog-on-blue-background-pet-care-and-training-concept-flat-lay-top-view.jpg?s=612x612&w=0&k=20&c=rA18Zf1SiyFh9yrFpe0M5HeaoAK5KG_X2vvnUAHSa1s=" alt="Pet Supplies">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Baby essentials</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://www.skiphop.com/on/demandware.static/-/Sites-carters_site_catalog/default/dwfbd6d594/images/skiphop/playtime/sh-m-playtime-lp-fillyourplayroom.jpg" alt="Baby essentials">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Electronics</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d9/Arduino_ftdi_chip-1.jpg" alt="Electronics">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Collectibles & Art</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://d7hftxdivxxvm.cloudfront.net/?quality=80&resize_to=width&src=https%3A%2F%2Fd32dm0rphc51dk.cloudfront.net%2F8IMDuNcKodHhz1vcJITr0w%2Fnormalized.jpg&width=450" alt="Collectibles & Art">
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="col-3 mx-2">
+            <div class="card">
+                <a href="">
+                    <div class="card-img-overlay d-flex align-items-center justify-content-center">
+                        <h4 class="card-title">Books, Movies & Music</h4>
+                    </div>
+                    <div class="img-content">
+                        <img src="https://content.airtreks.com/interest-group/wp-content/uploads/sites/2/2019/12/the-best-travel-movies-music-and-books-header-1650x850.jpg" alt="Books, Movies & Music">
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
