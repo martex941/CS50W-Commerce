@@ -1,19 +1,6 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <style>
-        .row {
-            background-color: rgb(195, 219, 211);
-            margin: 1rem;
-        }
-        img {
-            height: 300px;
-        }
-        a {
-            text-decoration: none;
-            color: black;
-        }
-    </style>
     <div class="row">
         <div class="col">
             <img src="{{ listing.photo }}" alt="Auction listing photo">
@@ -23,10 +10,23 @@
             <h5>Price: ${{ listing.price }}</h5>
             <h5>Seller: {{ listing.published_by }}</h5>
             <h5>Created: {{ listing.date_created }}</h5>
-            <form action="{% url 'listing_page' listing_title=listing_name %}" method="post" name="add-to-watchlist">
-                {% csrf_token %}
-                <button type="submit">Add to watchlist</button>
-            </form>
+            {% if in_watchlist %}
+                <form action="{% url 'listing_page' listing_title=listing.name %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="delete-from-watchlist" class="btn btn-secondary">Delete from your watchlist</button>
+                </form>
+            {% else %}
+                <form action="{% url 'listing_page' listing_title=listing.name %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" name="add-to-watchlist" class="btn btn-success">Add to watchlist</button>
+                </form>
+            {% endif %}
+            {% if is_creator %}
+                <form action="{% url 'listing_page' listing_title=listing.name %}" method="post" class="mt-5">
+                    {% csrf_token %}
+                    <button type="submit" name="close-auction" class="btn btn-danger">Close the auction</button>
+                </form>
+            {% endif %}
         </div>
         <div class="col">
             <p>{{ listing.description }}</p>

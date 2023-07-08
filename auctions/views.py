@@ -34,7 +34,7 @@ def create_listing(request):
         price=request.POST["bid"]
         photo=request.POST["photo"]
 
-        # Making sure the user inputs a url to a photo and not anything else
+        # Make sure the user inputs a url to a photo and not anything else
         if validate_url(photo):
             pass
         else:
@@ -49,20 +49,43 @@ def create_listing(request):
 
 
 def listing_page(request, listing_title):
+
+    # Get the proper AuctionListing model
     try:
         listing_info = AuctionListing.objects.get(name=listing_title)
     except AuctionListing.DoesNotExist:
         return HttpResponseRedirect(reverse("no_listing"))
     
+    user = request.user
+
+    # Check whether the user accessing the page is the creator of the listing
+    is_creator = False
+    if user.username.lower() == listing_info.published_by.lower():
+        is_creator = True
+
+    all_watchlist = Watchlist.objects.all()
+    new_watchlist_entry = Watchlist(watch_user=user, watch_listing=listing_info)
+
+    # Check whether the entry exists in the watchlist
+    in_watchlist = False
+    if all_watchlist.filter(watch_listing=new_watchlist_entry.watch_listing):
+            print(1)
+            in_watchlist = True
+    
+    # Handle the watchlist form
     if request.method == "POST":
-        user = request.user
-        new_watchlist_entry = Watchlist(watch_user=user, watch_listing=listing_info)
-        new_watchlist_entry.save()
-        return HttpResponse("Item added to your watchlist.")
+        if 'add-to-watchlist' in request.POST:
+            new_watchlist_entry.save()
+            return HttpResponseRedirect(reverse("watchlist"))
+        elif 'delete-from-watchlist' in request.POST:
+            delete_entry = Watchlist.objects.filter(watch_listing=new_watchlist_entry.watch_listing)
+            delete_entry.delete()
+            return HttpResponseRedirect(reverse("watchlist"))
 
     return render(request, "auctions/listing_page.html", {
         "listing": listing_info,
-        "listing_name": listing_info.name
+        "in_watchlist": in_watchlist,
+        "is_creator": is_creator
     })
 
 
@@ -74,10 +97,15 @@ def no_listing(request):
 def watchlist(request):
     user = request.user
     list = Watchlist.objects.filter(watch_user=user)
-    
+
     return render(request, "auctions/watchlist.html", {
         "listings": list
     })
+
+
+def categories(request):
+
+    return render(request, "auctions/categories.html")
 
 
 def login_view(request):
