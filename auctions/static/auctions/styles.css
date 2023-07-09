@@ -1,13 +1,33 @@
+/* CSS HEX */
+:root {
+    --honeydew: #e5f4e3ff;
+    --argentinian-blue: #5da9e9ff;
+    --marian-blue: #003f91ff;
+    --white: #ffffffff;
+    --finn: #6d326dff;
+}
+
+
+html {
+    background-color: var(--honeydew);
+}
+
 body {
     padding: 10px;
+    background-color: var(--honeydew);
 }
 
 .row {
-    background-color: rgba(239, 239, 239, 0.879);
+    background-color: whitesmoke;
     margin: 1rem;
     border-radius: 15px;
-    border: black solid 1px;
+    border: var(--finn) solid 1.5px;
 }
+
+h1, h2, h3, h4, h5, p {
+    color: var(--finn);
+}
+
 img {
     height: 300px;
 }

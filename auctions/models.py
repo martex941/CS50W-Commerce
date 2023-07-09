@@ -15,6 +15,7 @@ class AuctionListing(models.Model):
     photo = models.CharField(max_length=250)
     category = models.CharField(max_length=64, default="")
     date_created=models.DateTimeField(default=timezone.now, editable=False)
+    is_closed=models.BooleanField(default=False)
 
     def __str__(self):
         return f"{self.name}, published by {self.published_by}"
@@ -22,6 +23,8 @@ class AuctionListing(models.Model):
 
 class Comment(models.Model):
     comment_contents = models.CharField(max_length=250)
+    comment_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment_user", default="")
+    comment_date = models.DateTimeField(default=timezone.now, editable=False)
 
     def __str__(self):
         return f"{self.comment_contents}"
@@ -29,9 +32,12 @@ class Comment(models.Model):
 
 class Bid(models.Model):
     bid_price = models.PositiveIntegerField(default=0)
+    bid_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE, related_name="bid_listing", default="")
+    bid_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bid_user", default="")
+    bid_date = models.DateTimeField(default=timezone.now, editable=False)
 
     def __str__(self):
-        return f"{self.bid_price}"
+        return f"{self.bid_price} by {self.bid_user} on {self.bid_listing}"
     
 class Watchlist(models.Model):
     watch_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE, related_name="watch_listing", default="")

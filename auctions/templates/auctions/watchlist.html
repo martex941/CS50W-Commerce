@@ -1,6 +1,9 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+
+    <h1 class="text-center">WATCHLIST</h1>
+
     {% for listing in listings %}
         <a href="{{ listing.watch_listing.name }}">
             <div class="row">

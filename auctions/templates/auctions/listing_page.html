@@ -1,15 +1,47 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <style>
+        .bids_and_comments .row {
+            border: none;
+        }
+
+        .solid-line {
+            border-top: #6d326dff solid 2px;
+            margin-top: 1rem;
+        }
+
+    </style>
+
     <div class="row">
         <div class="col">
             <img src="{{ listing.photo }}" alt="Auction listing photo">
         </div>
         <div class="col">
+
             <h2>{{ listing.name }}</h2>
-            <h5>Price: ${{ listing.price }}</h5>
+
+            {% if user.is_authenticated and not is_creator and not listing.is_closed %}
+                <form action="{% url 'listing_page' listing_title=listing.name %}" method="post">
+                    {% csrf_token %}
+                    <h5>Place your bid:</h5>
+                    <input type="number" name="bid" placeholder="${{ listing.price }}">
+                    <button type="submit" name="place-bid">Place bid</button>
+                </form>
+            {% else %}
+                <h5>Price: ${{ listing.price }}</h5>
+            {% endif %}
+
             <h5>Seller: {{ listing.published_by }}</h5>
+
+            {% if listing.is_closed %}
+                <h5>Status: Closed</h5>
+            {% else %}
+                <h5>Status: Open</h5>
+            {% endif %}
+
             <h5>Created: {{ listing.date_created }}</h5>
+
             {% if in_watchlist %}
                 <form action="{% url 'listing_page' listing_title=listing.name %}" method="post">
                     {% csrf_token %}
@@ -21,15 +53,38 @@
                     <button type="submit" name="add-to-watchlist" class="btn btn-success">Add to watchlist</button>
                 </form>
             {% endif %}
+
             {% if is_creator %}
-                <form action="{% url 'listing_page' listing_title=listing.name %}" method="post" class="mt-5">
+                <form action="{% url 'listing_page' listing_title=listing.name %}" method="post" class="mt-4">
                     {% csrf_token %}
                     <button type="submit" name="close-auction" class="btn btn-danger">Close the auction</button>
                 </form>
             {% endif %}
         </div>
+
         <div class="col">
+            <h3>Description:</h3>
             <p>{{ listing.description }}</p>
         </div>
+        <div class="solid-line"></div>
+        <div class="bids_and_comments">
+            <div class="row">
+                <div class="col-4">
+                    <h2>BID HISTORY</h2>
+                    {% for bid in bid_history %}
+                        <div class="row">
+                            <h5>Bidder: {{ bid.bid_user }}</h5>
+                            <h5>Bid amount: {{ bid.bid_price }}</h5>
+                            <h5>Date: {{ bid.bid_date }}</h5>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col">
+                    <h2>COMMENTS</h2>
+                </div>
+            </div>
+        </div>
     </div>
+
+    
 {% endblock %}

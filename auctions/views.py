@@ -1,13 +1,14 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, AuctionListing, Watchlist
+from .models import User, AuctionListing, Watchlist, Bid
 
 
 def index(request):
@@ -48,6 +49,7 @@ def create_listing(request):
     return render(request, "auctions/create_listing.html")
 
 
+# Display the auction listing page
 def listing_page(request, listing_title):
 
     # Get the proper AuctionListing model
@@ -56,21 +58,39 @@ def listing_page(request, listing_title):
     except AuctionListing.DoesNotExist:
         return HttpResponseRedirect(reverse("no_listing"))
     
+    # Get the user model
     user = request.user
 
     # Check whether the user accessing the page is the creator of the listing
     is_creator = False
-    if user.username.lower() == listing_info.published_by.lower():
+    if user.username == listing_info.published_by:
         is_creator = True
 
+    # Handle closing the auction
+    if request.method == "POST" and 'close-auction' in request.POST:
+        return redirect("confirmation", listing_title=listing_info.name)
+
+    # Handle the bid form
+    if request.method == "POST" and 'place-bid' in request.POST:
+        new_bid = request.POST.get('bid', '')
+
+        if int(new_bid) > int(listing_info.price):
+            listing_info.price = new_bid
+            listing_info.save()
+            new_bid_entry = Bid(bid_price=new_bid, bid_listing=listing_info, bid_user=user)
+            new_bid_entry.save()
+
+    # Get bid history information
+    bid_history = Bid.objects.filter(bid_listing=listing_info)
+
+    # Watchlist related variables
     all_watchlist = Watchlist.objects.all()
     new_watchlist_entry = Watchlist(watch_user=user, watch_listing=listing_info)
 
     # Check whether the entry exists in the watchlist
     in_watchlist = False
     if all_watchlist.filter(watch_listing=new_watchlist_entry.watch_listing):
-            print(1)
-            in_watchlist = True
+        in_watchlist = True
     
     # Handle the watchlist form
     if request.method == "POST":
@@ -84,15 +104,37 @@ def listing_page(request, listing_title):
 
     return render(request, "auctions/listing_page.html", {
         "listing": listing_info,
+        "bid_history": bid_history,
         "in_watchlist": in_watchlist,
         "is_creator": is_creator
     })
 
 
+# Confirm closing the auction
+@login_required
+def confirmation(request, listing_title):
+    listing = AuctionListing.objects.get(name=listing_title)
+    closed = False
+    if request.method == "POST":
+        if 'yes' in request.POST:
+            listing.is_closed=True
+            messages.success(request, f"'{listing.name}' auction closed successfully.")
+            closed = True
+        else:
+            return redirect("listing_page", listing_title=listing.name)
+
+    return render(request, "auctions/confirmation.html", {
+        "listing_title": listing_title,
+        "closed": closed
+    })
+
+
+# Display error that no such listing exists in the database
 def no_listing(request):
     return render (request, "auctions/no_listing.html")
 
 
+# Display the watchlist of the logged in user
 @login_required
 def watchlist(request):
     user = request.user

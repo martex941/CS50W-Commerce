@@ -1,7 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2 class="text-center">Active Listings</h2>
     {% for listing in all_listings %}
         <a href="{{ listing.name }}">
             <div class="row">
@@ -19,6 +19,7 @@
                     <h5>Created: {{ listing.date_created }}</h5>
                 </div>
                 <div class="col">
+                    <h3>Description:</h3>
                     <p>{{ listing.description }}</p>
                 </div>
             </div>

@@ -1,0 +1,21 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+        {% if closed %}
+            {% for message in messages %}
+                <div class="success-message">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h1>ARE YOU SURE YOU WANT TO CLOSE "{{ listing_title }}" AUCTION?</h1>
+            <form action="{% url 'confirmation' listing_title=listing_title %}" method="post" class="mt-5">
+                {% csrf_token %}
+                <button type="submit" name="yes" class="btn btn-danger">Yes</button>
+                <button type="submit" name="no" class="btn btn-success">No</button>
+            </form>
+        {% endif %}
+{% endblock %}
