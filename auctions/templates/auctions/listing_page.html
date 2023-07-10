@@ -11,6 +11,20 @@
             margin-top: 1rem;
         }
 
+        .bids, .comments {
+            border-bottom: #6d326dff solid 1px;
+        }
+
+        .comment {
+            background-color: #ffffffff;
+        }
+
+        .col, .col-4 {
+            margin-top: 1rem;
+        }
+
+        
+
     </style>
 
     <div class="row">
@@ -54,7 +68,7 @@
                 </form>
             {% endif %}
 
-            {% if is_creator %}
+            {% if is_creator  and not listing.is_closed %}
                 <form action="{% url 'listing_page' listing_title=listing.name %}" method="post" class="mt-4">
                     {% csrf_token %}
                     <button type="submit" name="close-auction" class="btn btn-danger">Close the auction</button>
@@ -66,25 +80,41 @@
             <h3>Description:</h3>
             <p>{{ listing.description }}</p>
         </div>
+
         <div class="solid-line"></div>
+
         <div class="bids_and_comments">
             <div class="row">
                 <div class="col-4">
-                    <h2>BID HISTORY</h2>
+                    <h2 class="bids">BID HISTORY</h2>
                     {% for bid in bid_history %}
-                        <div class="row">
+                        <div class="row bid">
                             <h5>Bidder: {{ bid.bid_user }}</h5>
-                            <h5>Bid amount: {{ bid.bid_price }}</h5>
+                            <h5>Bid amount: ${{ bid.bid_price }}</h5>
                             <h5>Date: {{ bid.bid_date }}</h5>
                         </div>
                     {% endfor %}
                 </div>
                 <div class="col">
-                    <h2>COMMENTS</h2>
+                    <h2 class="comments">COMMENTS</h2>
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'listing_page' listing_title=listing.name %}" method="post">
+                            {% csrf_token %}
+                            <textarea placeholder="Add a comment... (max 250 characters)" rows="4" cols="130" name="comment-contents"></textarea>
+                            <br>
+                            <button type="submit" name="add-comment" class="btn btn-primary">Submit</button>
+                        </form>
+                    {% endif %}
+                    {% for comment in comments %}
+                        <div class=" row comment">
+                            <h5>{{ comment.comment_user }}:</h5>
+                            <p>{{ comment.comment_contents }}</p>
+                            <span>Date: {{ comment.comment_date }}</span>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 
-    
 {% endblock %}

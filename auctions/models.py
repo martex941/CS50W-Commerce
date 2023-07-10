@@ -23,6 +23,7 @@ class AuctionListing(models.Model):
 
 class Comment(models.Model):
     comment_contents = models.CharField(max_length=250)
+    comment_listing = models.ForeignKey(AuctionListing, on_delete=models.CASCADE, related_name="comment_listing", default="")
     comment_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comment_user", default="")
     comment_date = models.DateTimeField(default=timezone.now, editable=False)
 

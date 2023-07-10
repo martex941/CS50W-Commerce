@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .models import User, AuctionListing, Watchlist, Bid
+from .models import User, AuctionListing, Watchlist, Bid, Comment
 
 
 def index(request):
@@ -73,7 +73,6 @@ def listing_page(request, listing_title):
     # Handle the bid form
     if request.method == "POST" and 'place-bid' in request.POST:
         new_bid = request.POST.get('bid', '')
-
         if int(new_bid) > int(listing_info.price):
             listing_info.price = new_bid
             listing_info.save()
@@ -81,7 +80,17 @@ def listing_page(request, listing_title):
             new_bid_entry.save()
 
     # Get bid history information
-    bid_history = Bid.objects.filter(bid_listing=listing_info)
+    bid_history = Bid.objects.filter(bid_listing=listing_info).order_by('-bid_date')
+
+    # Get comments for the auction
+    auction_comments = Comment.objects.filter(comment_listing=listing_info).order_by('-comment_date')
+
+    # Handle comments form
+    if request.method == "POST" and 'add-comment' in request.POST:
+        comment = request.POST.get('comment-contents', '')
+        new_comment_entry = Comment(comment_contents=comment, comment_listing=listing_info, comment_user=user)
+        new_comment_entry.save()
+
 
     # Watchlist related variables
     all_watchlist = Watchlist.objects.all()
@@ -105,6 +114,7 @@ def listing_page(request, listing_title):
     return render(request, "auctions/listing_page.html", {
         "listing": listing_info,
         "bid_history": bid_history,
+        "comments": auction_comments,
         "in_watchlist": in_watchlist,
         "is_creator": is_creator
     })
@@ -118,6 +128,7 @@ def confirmation(request, listing_title):
     if request.method == "POST":
         if 'yes' in request.POST:
             listing.is_closed=True
+            listing.save()
             messages.success(request, f"'{listing.name}' auction closed successfully.")
             closed = True
         else:
