@@ -1,21 +1,28 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-        {% if closed %}
-            {% for message in messages %}
-                <div class="success-message">
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
+    {% if closed %}
+        {% for message in messages %}
+        <div class="container d-flex justify-content-center">
+            <div class="success-message text-center m-4">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-            {% endfor %}
-        {% else %}
-            <h1>ARE YOU SURE YOU WANT TO CLOSE "{{ listing_title }}" AUCTION?</h1>
-            <form action="{% url 'confirmation' listing_title=listing_title %}" method="post" class="mt-5">
-                {% csrf_token %}
-                <button type="submit" name="yes" class="btn btn-danger">Yes</button>
-                <button type="submit" name="no" class="btn btn-success">No</button>
-            </form>
-        {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+        <div class="text-center">
+            <a href="{% url 'listing_page' listing_title=listing_title %}"><h2>Take me to the auction.</h2></a>
+        </div>
+    {% else %}
+            <div class="confirmation text-center">
+                <h1>ARE YOU SURE YOU WANT TO CLOSE YOUR "{{ listing_title }}" AUCTION?</h1>
+                <form action="{% url 'confirmation' listing_title=listing_title %}" method="post" class="mt-5">
+                    {% csrf_token %}
+                    <button type="submit" name="yes" class="btn btn-danger">Yes</button>
+                    <button type="submit" name="no" class="btn btn-success">No</button>
+                </form>        
+            </div>
+    {% endif %}
 {% endblock %}
