@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="text-center">Active Listings</h2>
+    <h2 class="text-center">Category: {{ category }}</h2>
+    {% for listing in categories_search %}
+        <a href="{{ listing.name }}">
+            <div class="row">
+                <div class="col">
+                    {% if listing.photo %}
+                        <img src="{{ listing.photo }}" alt="Auction listing photo">
+                    {% else %}
+                        <img src="https://img.propertyshark.com/img/no_listing_photo.png" alt="Photo not available">
+                    {% endif %}
+                </div>
+                <div class="col">
+                    <h2>{{ listing.name }}</h2>
+                    <h5>Price: ${{ listing.price }}</h5>
+                    <h5>Seller: {{ listing.published_by }}</h5>
+                    <h5>Created: {{ listing.date_created }}</h5>
+                </div>
+                <div class="col">
+                    <h3>Description:</h3>
+                    <p>{{ listing.description }}</p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+{% endblock %}

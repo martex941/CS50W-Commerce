@@ -39,3 +39,7 @@ a {
 p {
     font-size: large;
 }
+
+.error-message, .success-message {
+    width: 30%;
+}

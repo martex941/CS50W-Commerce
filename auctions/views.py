@@ -42,14 +42,16 @@ def create_listing(request):
             photo = "https://img.propertyshark.com/img/no_listing_photo.png"
 
         category=request.POST["category"]
+
+        # Make a new AuctionListing model using the variables and save it
         new_listing=AuctionListing(name=listing_name, description=description, published_by=published_by, price=price, photo=photo, category=category)
         new_listing.save()
+
         return redirect("listing_page", listing_title=listing_name)
 
     return render(request, "auctions/create_listing.html")
 
 
-# Display the auction listing page
 def listing_page(request, listing_title):
 
     # Get the proper AuctionListing model
@@ -78,9 +80,19 @@ def listing_page(request, listing_title):
             listing_info.save()
             new_bid_entry = Bid(bid_price=new_bid, bid_listing=listing_info, bid_user=user)
             new_bid_entry.save()
+        else: 
+            messages.error(request, "ERROR: Your bid must be higher than the current price.")
 
     # Get bid history information
     bid_history = Bid.objects.filter(bid_listing=listing_info).order_by('-bid_date')
+
+    # Check if there are no bids on the listing
+    bid_history_is_empty = False
+    if not bid_history:
+        bid_history_is_empty = True
+
+    # Bid winner
+    bid_winner = Bid.objects.filter(bid_listing=listing_info).order_by('-bid_date').first()
 
     # Get comments for the auction
     auction_comments = Comment.objects.filter(comment_listing=listing_info).order_by('-comment_date')
@@ -88,9 +100,11 @@ def listing_page(request, listing_title):
     # Handle comments form
     if request.method == "POST" and 'add-comment' in request.POST:
         comment = request.POST.get('comment-contents', '')
-        new_comment_entry = Comment(comment_contents=comment, comment_listing=listing_info, comment_user=user)
-        new_comment_entry.save()
-
+        if len(comment) > 250:
+            messages.error(request, "ERROR: Comments must have maximum 250 characters.")
+        else:
+            new_comment_entry = Comment(comment_contents=comment, comment_listing=listing_info, comment_user=user)
+            new_comment_entry.save()
 
     # Watchlist related variables
     all_watchlist = Watchlist.objects.all()
@@ -114,6 +128,8 @@ def listing_page(request, listing_title):
     return render(request, "auctions/listing_page.html", {
         "listing": listing_info,
         "bid_history": bid_history,
+        "bid_winner": bid_winner,
+        "bids_empty": bid_history_is_empty,
         "comments": auction_comments,
         "in_watchlist": in_watchlist,
         "is_creator": is_creator
@@ -125,7 +141,9 @@ def listing_page(request, listing_title):
 def confirmation(request, listing_title):
     listing = AuctionListing.objects.get(name=listing_title)
     closed = False
+
     if request.method == "POST":
+        # If the user decides on closing the auction, update the AuctionListing model and display a message
         if 'yes' in request.POST:
             listing.is_closed=True
             listing.save()
@@ -145,7 +163,6 @@ def no_listing(request):
     return render (request, "auctions/no_listing.html")
 
 
-# Display the watchlist of the logged in user
 @login_required
 def watchlist(request):
     user = request.user
@@ -157,8 +174,15 @@ def watchlist(request):
 
 
 def categories(request):
-
     return render(request, "auctions/categories.html")
+
+def categories_search(request, category):
+    listings = AuctionListing.objects.filter(category=category)
+    
+    return render(request, "auctions/categories_search.html", {
+        "categories_search": listings,
+        "category": category
+    })
 
 
 def login_view(request):

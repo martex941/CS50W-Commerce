@@ -22,10 +22,16 @@
         .col, .col-4 {
             margin-top: 1rem;
         }
-
-        
-
     </style>
+
+    {% for message in messages %}
+    <div class="error-message text-center m-4">
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
 
     <div class="row">
         <div class="col">
@@ -42,6 +48,10 @@
                     <input type="number" name="bid" placeholder="${{ listing.price }}">
                     <button type="submit" name="place-bid">Place bid</button>
                 </form>
+            {% elif listing.is_closed and bids_empty %}
+                <h5>There were no bids.</h5>
+            {% elif listing.is_closed and not bids_empty %}
+                <h5>{{ bid_winner.bid_user }} has won the auction by bidding ${{ bid_winner.bid_price }}</h5>
             {% else %}
                 <h5>Price: ${{ listing.price }}</h5>
             {% endif %}
