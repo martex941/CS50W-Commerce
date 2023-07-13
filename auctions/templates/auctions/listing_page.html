@@ -51,12 +51,13 @@
             {% elif listing.is_closed and bids_empty %}
                 <h5>There were no bids.</h5>
             {% elif listing.is_closed and not bids_empty %}
-                <h5>{{ bid_winner.bid_user }} has won the auction by bidding ${{ bid_winner.bid_price }}</h5>
+                <h5>Winner: {{ bid_winner.bid_user }}</h5>
             {% else %}
                 <h5>Price: ${{ listing.price }}</h5>
             {% endif %}
 
             <h5>Seller: {{ listing.published_by }}</h5>
+            <h5>Category: {{ listing.category }}</h5>
 
             {% if listing.is_closed %}
                 <h5>Status: Closed</h5>
@@ -66,19 +67,19 @@
 
             <h5>Created: {{ listing.date_created }}</h5>
 
-            {% if in_watchlist %}
+            {% if user.is_authenticated and in_watchlist %}
                 <form action="{% url 'listing_page' listing_title=listing.name %}" method="post">
                     {% csrf_token %}
                     <button type="submit" name="delete-from-watchlist" class="btn btn-secondary">Delete from your watchlist</button>
                 </form>
-            {% else %}
+            {% elif user.is_authenticated and not in_watchlist %}
                 <form action="{% url 'listing_page' listing_title=listing.name %}" method="post">
                     {% csrf_token %}
                     <button type="submit" name="add-to-watchlist" class="btn btn-success">Add to watchlist</button>
                 </form>
             {% endif %}
 
-            {% if is_creator  and not listing.is_closed %}
+            {% if is_creator and not listing.is_closed %}
                 <form action="{% url 'listing_page' listing_title=listing.name %}" method="post" class="mt-4">
                     {% csrf_token %}
                     <button type="submit" name="close-auction" class="btn btn-danger">Close the auction</button>

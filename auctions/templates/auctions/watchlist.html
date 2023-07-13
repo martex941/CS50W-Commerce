@@ -5,7 +5,7 @@
     <h1 class="text-center">WATCHLIST</h1>
 
     {% for listing in listings %}
-        <a href="{{ listing.watch_listing.name }}">
+        <a href="{% url 'listing_page' listing_title=listing.watch_listing.name %}">
             <div class="row">
                 <div class="col">
                     <img src="{{ listing.watch_listing.photo }}" alt="Auction listing photo">

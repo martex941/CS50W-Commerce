@@ -4,7 +4,7 @@
     <h2 class="text-center">Active Listings</h2>
     <h2 class="text-center">Category: {{ category }}</h2>
     {% for listing in categories_search %}
-        <a href="{{ listing.name }}">
+        <a href="{% url 'listing_page' listing_title=listing.name %}">
             <div class="row">
                 <div class="col">
                     {% if listing.photo %}

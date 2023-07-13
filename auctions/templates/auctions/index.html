@@ -3,7 +3,7 @@
 {% block body %}
     <h2 class="text-center">Active Listings</h2>
     {% for listing in all_listings %}
-        <a href="{{ listing.name }}">
+        <a href="{% url 'listing_page' listing_title=listing.name %}">
             <div class="row">
                 <div class="col">
                     {% if listing.photo %}

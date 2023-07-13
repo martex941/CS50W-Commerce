@@ -53,7 +53,6 @@ def create_listing(request):
 
 
 def listing_page(request, listing_title):
-
     # Get the proper AuctionListing model
     try:
         listing_info = AuctionListing.objects.get(name=listing_title)
@@ -106,14 +105,17 @@ def listing_page(request, listing_title):
             new_comment_entry = Comment(comment_contents=comment, comment_listing=listing_info, comment_user=user)
             new_comment_entry.save()
 
-    # Watchlist related variables
-    all_watchlist = Watchlist.objects.all()
-    new_watchlist_entry = Watchlist(watch_user=user, watch_listing=listing_info)
-
-    # Check whether the entry exists in the watchlist
+    # Assume the listing is not in watchlist
     in_watchlist = False
-    if all_watchlist.filter(watch_listing=new_watchlist_entry.watch_listing):
-        in_watchlist = True
+
+    if request.user.is_authenticated:
+        # Watchlist related variables
+        all_watchlist = Watchlist.objects.all()
+        new_watchlist_entry = Watchlist(watch_user=user, watch_listing=listing_info)
+
+        # Check whether the entry exists in the watchlist   
+        if all_watchlist.filter(watch_listing=new_watchlist_entry.watch_listing):
+            in_watchlist = True
     
     # Handle the watchlist form
     if request.method == "POST":
