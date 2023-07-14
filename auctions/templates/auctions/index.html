@@ -1,6 +1,12 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+    <style>
+        .col {
+            margin: 1rem;
+        }
+    </style>
+    
     <h2 class="text-center">Active Listings</h2>
     {% for listing in all_listings %}
         <a href="{% url 'listing_page' listing_title=listing.name %}">
